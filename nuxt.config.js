@@ -18,7 +18,8 @@ export default {
 
   // Plugins
   plugins: [
-    '~/plugins/supabase.js'
+    '~/plugins/supabase.js',
+    '~/plugins/sweetalert.js'
   ],
 
   // Global CSS

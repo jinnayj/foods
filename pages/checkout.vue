@@ -42,6 +42,14 @@
 
 <script>
 export default {
+  // บังคับล็อกอินก่อนเข้าหน้านี้ (Middleware)
+  middleware({ store, redirect }) {
+    // ถ้าไม่มี User ให้เด้งไปหน้า Login
+    const user = store.$supabase.auth.getUser()
+    if (!user) {
+      return redirect('/login')
+    }
+  },
   data() {
     return {
       loading: false,
@@ -58,32 +66,59 @@ export default {
   },
   methods: {
     async submitOrder() {
-      if (this.cartItems.length === 0) return alert('ตะกร้าว่างเปล่า!')
+      if (this.cartItems.length === 0) {
+         this.$swal.fire({ icon: 'warning', title: 'ตะกร้าว่างเปล่า!', confirmButtonColor: '#000' })
+         return
+      }
+
+      // ดึงข้อมูล User ปัจจุบัน
+      const { data: { user } } = await this.$supabase.auth.getUser()
+      if (!user) return this.$router.push('/login')
+      
+      // Loading
+      this.$swal.fire({
+        title: 'กำลังบันทึกออเดอร์...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          this.$swal.showLoading()
+        }
+      })
       
       this.loading = true
-      try {
-        // 1. สำคัญ: เก็บราคาสุทธิไว้ในตัวแปรก่อน (เพราะเดี๋ยวเราจะล้างตะกร้า ทำให้ totalPrice กลายเป็น 0)
+try {
         const finalPrice = this.totalPrice
 
-        // 2. บันทึกลง Supabase
-        const { error } = await this.$supabase.from('orders').insert({
+        // 1. บันทึกลง Supabase (เพิ่ม .select() ต่อท้ายเพื่อขอ ID กลับมา)
+        const { data, error } = await this.$supabase.from('orders').insert({
+          user_id: user.id,
           customer_name: this.form.name,
           address: this.form.address,
           phone: this.form.phone,
-          total_price: finalPrice, // ใช้ค่าที่เก็บไว้
-          items: this.cartItems 
+          total_price: finalPrice,
+          items: this.cartItems,
+          status: 'pending' // สถานะเริ่มต้น
         })
+        .select() // <--- สำคัญ! ต้องมีบรรทัดนี้ถึงจะได้ ID กลับมา
 
         if (error) throw error
 
-        // 3. สำเร็จ: ล้างตะกร้า
-        this.$store.commit('cart/CLEAR_CART')
+        // ได้ Order ID มาแล้ว
+        const newOrderId = data[0].id
+
+        // 2. ล้างตะกร้า
+        await this.$store.dispatch('cart/clearCart')
         
-        // 4. ส่งลูกค้าไปหน้าจ่ายเงิน (Payment) พร้อมแนบยอดเงินไปด้วย
-        this.$router.push(`/payment?amount=${finalPrice}`)
+        // 3. ไปหน้าจ่ายเงิน (ส่ง order_id ไปด้วย)
+        this.$swal.close()
+        this.$router.push(`/payment?amount=${finalPrice}&order_id=${newOrderId}`)
 
       } catch (err) {
-        alert('เกิดข้อผิดพลาด: ' + err.message)
+        this.$swal.fire({
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาด',
+          text: err.message,
+          confirmButtonColor: '#d33'
+        })
       } finally {
         this.loading = false
       }

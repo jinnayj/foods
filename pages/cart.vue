@@ -72,7 +72,7 @@ export default {
   },
   methods: {
     removeItem(index) {
-      this.$store.commit('cart/REMOVE_ITEM', index)
+      this.$store.dispatch('cart/removeItem', index)
     }
   }
 }

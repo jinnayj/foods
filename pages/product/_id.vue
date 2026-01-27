@@ -21,7 +21,7 @@
           <p class="text-2xl font-bold mb-6">฿{{ product.price.toLocaleString() }}</p>
 
           <p class="text-gray-600 mb-8 leading-relaxed">
-            {{ product.description || 'รองเท้าดีไซน์สุดล้ำ ใส่สบาย พร้อมลุยทุกสถานการณ์ ผลิตจากวัสดุคุณภาพสูง ระบายอากาศได้ดีเยี่ยม...' }}
+            {{ product.description || 'รองเท้าดีไซน์สุดล้ำ ใส่สบาย พร้อมลุยทุกสถานการณ์ ผลิตจากวัสดุคุณภาพสูง...' }}
           </p>
 
           <div class="mb-8">
@@ -39,9 +39,6 @@
                 US {{ size }}
               </button>
             </div>
-            <p v-if="showSizeError" class="text-red-500 text-sm mt-2">
-              * กรุณาเลือกไซส์ก่อนสั่งซื้อ
-            </p>
           </div>
 
           <button 
@@ -58,7 +55,7 @@
 
 <script>
 export default {
-  // 1. ดึงข้อมูลสินค้า (ทำงานฝั่ง Server)
+  // 1. ดึงข้อมูลสินค้า
   async asyncData({ params, $supabase, error }) {
     try {
       const { data, error: dbError } = await $supabase
@@ -68,42 +65,48 @@ export default {
         .single()
 
       if (dbError) throw dbError
-      
       return { product: data }
     } catch (e) {
       error({ statusCode: 404, message: 'Product not found' })
     }
   },
 
-  // 2. ตัวแปรเก็บค่า (State)
+  // 2. ตัวแปร State
   data() {
     return {
-      selectedSize: null, // เก็บไซส์ที่ลูกค้าเลือก
-      showSizeError: false // ควบคุมการแสดงข้อความเตือน
+      selectedSize: null
     }
   },
 
-  // 3. ฟังก์ชันการทำงาน (Methods)
+  // 3. ฟังก์ชันการทำงาน
   methods: {
     addToCart() {
-      // เช็คว่าเลือกไซส์หรือยัง
+      // แจ้งเตือนถ้าลืมเลือกไซส์ (SweetAlert2)
       if (!this.selectedSize) {
-        this.showSizeError = true
+        this.$swal.fire({
+          icon: 'warning',
+          title: 'ลืมอะไรไปรึเปล่า?',
+          text: 'กรุณาเลือกไซส์ก่อนกดสั่งซื้อนะครับ',
+          confirmButtonColor: '#000000'
+        })
         return
       }
-      this.showSizeError = false
       
-      // เตรียมข้อมูลสินค้า
       const item = {
         ...this.product,
         size: this.selectedSize
       }
       
-      // ส่งเข้า Vuex Store
-      this.$store.commit('cart/ADD_ITEM', item)
+      this.$store.dispatch('cart/addItem', item)
       
-      // แจ้งเตือน
-      alert(`เพิ่ม ${this.product.name} (Size ${this.selectedSize}) ลงตะกร้าแล้ว!`)
+      // แจ้งเตือนสำเร็จ (SweetAlert2)
+      this.$swal.fire({
+        icon: 'success',
+        title: 'เรียบร้อย!',
+        text: `เพิ่ม ${this.product.name} ลงตะกร้าแล้ว`,
+        showConfirmButton: false,
+        timer: 1500
+      })
     }
   }
 }

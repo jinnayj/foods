@@ -48,24 +48,32 @@ export default {
       categoryName: ''
     }
   },
-  async fetch() {
-    // รับค่าจาก URL (เช่น 'Men', 'Women')
-    this.categoryName = this.$route.params.slug
+ async fetch() {
+  this.categoryName = this.$route.params.slug
 
-    try {
-      // ดึงข้อมูลจาก Supabase โดยกรองตาม column 'category'
-      // ใช้ ilike เพื่อให้ค้นหาแบบไม่สนตัวพิมพ์เล็ก-ใหญ่ (Men = men)
-      const { data, error } = await this.$supabase
-        .from('products')
-        .select('*')
-        .ilike('category', this.categoryName) 
+  try {
+    let query = this.$supabase
+      .from('products')
+      .select('*')
+
+    // 🟢 ถ้าเป็นหน้า NEW → เอาสินค้าล่าสุด
+    if (this.categoryName.toLowerCase() === 'new') {
+      query = query.order('created_at', { ascending: false })
+    } 
+    // 🟢 ถ้าเป็นหมวดปกติ → filter category
+    else {
+      query = query
+        .ilike('category', this.categoryName)
         .order('id')
-      
-      if (error) throw error
-      this.products = data
-    } catch (error) {
-      console.error(error)
     }
+
+    const { data, error } = await query
+    if (error) throw error
+
+    this.products = data
+  } catch (error) {
+    console.error(error)
   }
+}
 }
 </script>

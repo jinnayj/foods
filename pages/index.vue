@@ -26,6 +26,19 @@
       </div>
     </header>
 
+    <section class="relative w-full h-[300px] md:h-[500px] bg-black overflow-hidden">
+      <img 
+        src="/nike-banner.gif" 
+        alt="Nike Campaign" 
+        class="w-full h-full object-cover object-center"
+      />
+      <div class="absolute inset-0 bg-black/20 flex flex-col justify-center items-start p-10 md:p-20">
+        <h3 class="text-white text-3xl md:text-5xl font-black italic uppercase tracking-tighter">
+          Just Move It.
+        </h3>
+        <p class="text-white/80 mt-2 font-medium">New GIF Collection available now</p>
+      </div>
+    </section>
     <div class="bg-black text-white py-16 border-b border-gray-800">
       <div class="container mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center divide-y md:divide-y-0 md:divide-x divide-gray-800">
@@ -46,11 +59,10 @@
     </div>
 
     <main class="container mx-auto px-4 py-16">
-      
       <section id="category-section" class="mb-24">
         <div class="flex items-center justify-between mb-10">
-           <h3 class="text-4xl font-black uppercase">Categories</h3>
-           <p class="text-gray-400 text-sm hidden md:block">SELECT YOUR STYLE</p>
+            <h3 class="text-4xl font-black uppercase">Categories</h3>
+            <p class="text-gray-400 text-sm hidden md:block">SELECT YOUR STYLE</p>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -63,21 +75,27 @@
           </nuxt-link>
 
           <nuxt-link to="/category/Women" class="relative h-[450px] rounded-2xl overflow-hidden group cursor-pointer shadow-lg">
-            <img src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-8">
-              <h2 class="text-white text-5xl font-black uppercase tracking-tighter mb-2">Women</h2>
-              <span class="text-gray-300 text-sm opacity-0 group-hover:opacity-100 transition transform translate-y-4 group-hover:translate-y-0">Shop Now →</span>
-            </div>
-          </nuxt-link>
+          <img src="https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-8">
+            <h2 class="text-white text-5xl font-black uppercase tracking-tighter mb-2">Women</h2>
+            <span class="text-gray-300 text-sm opacity-0 group-hover:opacity-100 transition transform translate-y-4 group-hover:translate-y-0">
+              Shop Now →
+            </span>
+          </div>
+        </nuxt-link>
 
-          <nuxt-link to="/category/Running" class="relative h-[450px] rounded-2xl overflow-hidden group cursor-pointer shadow-lg">
-            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-8">
-              <h2 class="text-white text-5xl font-black uppercase tracking-tighter mb-2">Sport</h2>
-              <span class="text-gray-300 text-sm opacity-0 group-hover:opacity-100 transition transform translate-y-4 group-hover:translate-y-0">Shop Now →</span>
-            </div>
-          </nuxt-link>
-        </div>
+        <nuxt-link to="/category/New" class="relative h-[450px] rounded-2xl overflow-hidden group cursor-pointer shadow-lg">
+          <img src="https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-8">
+            <h2 class="text-white text-5xl font-black uppercase tracking-tighter mb-2">New</h2>
+            <span class="text-gray-300 text-sm opacity-0 group-hover:opacity-100 transition transform translate-y-4 group-hover:translate-y-0">
+              Shop Now →
+            </span>
+          </div>
+        </nuxt-link>
+
+          </div>
+          
       </section>
 
       <div class="flex items-end justify-between mb-10">
@@ -88,11 +106,9 @@
       <div v-if="$fetchState.pending" class="text-center py-20">
         <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-gray-200 border-t-black"></div>
       </div>
-
       <div v-else-if="$fetchState.error" class="text-center py-20 text-red-500">
         โหลดข้อมูลไม่สำเร็จ (ลองรีเฟรชใหม่นะ)
       </div>
-
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <nuxt-link 
           v-for="product in products" 
@@ -102,13 +118,11 @@
         >
           <div class="relative w-full overflow-hidden rounded-xl bg-gray-100 aspect-w-1 aspect-h-1 mb-4">
              <span class="absolute top-3 left-3 bg-black text-white text-[10px] font-bold px-2 py-1 rounded z-10 uppercase tracking-wider">New</span>
-            
             <img 
               :src="product.image_url" 
               class="h-72 w-full object-cover object-center group-hover:scale-110 transition duration-500 ease-in-out"
             />
           </div>
-          
           <div class="flex justify-between items-start">
             <div>
               <h3 class="text-base font-bold text-gray-900 group-hover:text-gray-600 transition">{{ product.name }}</h3>

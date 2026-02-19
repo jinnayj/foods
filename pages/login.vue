@@ -1,40 +1,86 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
-      <div class="text-center">
-        <h2 class="mt-6 text-3xl font-black uppercase tracking-tighter">Welcome Back</h2>
-        <p class="mt-2 text-sm text-gray-600">
-          เข้าสู่ระบบเพื่อจัดการออเดอร์ของคุณ
-        </p>
-      </div>
+  <div class="min-h-screen flex items-center justify-center bg-[#fdfaf7] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+    <div class="max-w-4xl w-full flex overflow-hidden bg-white rounded-2xl shadow-2xl">
       
-      <form class="mt-8 space-y-6" @submit.prevent="handleLogin">
-        <div class="space-y-4">
-          <div>
-            <label class="sr-only">Email address</label>
-            <input v-model="email" type="email" required class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-black focus:border-black focus:z-10 sm:text-sm" placeholder="Email address">
-          </div>
-          <div>
-            <label class="sr-only">Password</label>
-            <input v-model="password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-black focus:border-black focus:z-10 sm:text-sm" placeholder="Password">
-          </div>
+      <div class="hidden md:block w-1/2 bg-cover bg-center relative" 
+           style="background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80')">
+        <div class="absolute inset-0 bg-black bg-opacity-30 backdrop-blur-[2px] flex flex-col justify-end p-10 text-white">
+          <h1 class="text-4xl font-serif font-bold italic">Taste of Perfection.</h1>
+          <p class="mt-2 text-gray-200">สัมผัสประสบการณ์รสชาติที่เหนือระดับได้ทุกวัน</p>
         </div>
+      </div>
 
-        <div>
-          <button type="submit" :disabled="loading" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition transform active:scale-95">
-            {{ loading ? 'Signing in...' : 'Sign In' }}
-          </button>
+      <div class="w-full md:w-1/2 p-10 lg:p-14">
+        <div class="text-center md:text-left">
+          <div class="flex justify-center md:justify-start mb-4">
+            <span class="p-3 bg-orange-100 rounded-full text-orange-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+            </span>
+          </div>
+          <h2 class="text-3xl font-bold text-gray-800 tracking-tight">ยินดีต้อนรับกลับมา</h2>
+          <p class="mt-2 text-sm text-gray-500 font-medium">เข้าสู่ระบบเพื่อจัดการออเดอร์สุดพิเศษของคุณ</p>
         </div>
         
-        <div class="text-center text-sm">
-          <span class="text-gray-500">ยังไม่มีบัญชี? </span>
-          <nuxt-link to="/register" class="font-bold text-black hover:underline">สมัครสมาชิก</nuxt-link>
-        </div>
-      </form>
+        <form class="mt-8 space-y-5" @submit.prevent="handleLogin">
+          <div>
+            <label class="block text-xs font-semibold uppercase text-gray-400 mb-1 ml-1">อีเมล</label>
+            <input 
+              v-model="email" 
+              type="email" 
+              required 
+              class="block w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-orange-500 focus:bg-white focus:outline-none transition-all duration-200 text-gray-700" 
+              placeholder="name@example.com"
+            >
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase text-gray-400 mb-1 ml-1">รหัสผ่าน</label>
+            <input 
+              v-model="password" 
+              type="password" 
+              required 
+              class="block w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-orange-500 focus:bg-white focus:outline-none transition-all duration-200 text-gray-700" 
+              placeholder="••••••••"
+            >
+          </div>
+
+          <div class="flex items-center justify-end">
+            <a href="#" class="text-xs font-semibold text-orange-600 hover:text-orange-700">ลืมรหัสผ่าน?</a>
+          </div>
+
+          <button 
+            type="submit" 
+            :disabled="loading" 
+            class="w-full py-3.5 bg-gray-900 text-white font-bold rounded-xl shadow-lg hover:bg-orange-600 transform transition-all duration-300 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span v-if="loading" class="flex items-center justify-center">
+              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              กำลังดำเนินการ...
+            </span>
+            <span v-else>เข้าสู่ระบบ</span>
+          </button>
+          
+          <div class="relative py-4">
+            <div class="absolute inset-0 flex items-center px-1"><div class="w-full border-t border-gray-100"></div></div>
+            <div class="relative flex justify-center text-xs uppercase"><span class="bg-white px-2 text-gray-400 font-medium">หรือ</span></div>
+          </div>
+
+          <div class="text-center">
+            <p class="text-sm text-gray-600">
+              ยังไม่มีบัญชีสมาชิกใช่หรือไม่? 
+              <nuxt-link to="/register" class="font-bold text-orange-600 hover:underline">สมัครสมาชิกใหม่</nuxt-link>
+            </p>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </template>
-
 <script>
 export default {
   data() {
